@@ -15,7 +15,7 @@ photoperiod <-
       tidyr::full_seq(period = 1) %>%
       rep(., 2) %>%
       paste0(., turning_times) %>%
-      matrix(., ncol = 2)
+      matrix(., ncol = 2, byrow = T)
 
     turning_points[,1] %>%
       seq_along %>%
