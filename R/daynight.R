@@ -1,5 +1,5 @@
 darkperiod <-
-  function(.tbl, time_col_name = time, day_init_end, ...){
+  function(.tbl, time_col_name = time, day_init_end, show_next_dark = F, ...){
     time_col <- enquo(time_col_name)
 
     turning_times <-
@@ -14,15 +14,27 @@ darkperiod <-
       as.Date %>%
       tidyr::full_seq(period = 1)
 
-    turning_points <-
-      paste0(
-        rep(dates_contained, each = length(turning_times)),
-        rep(turning_times, times = length(dates_contained))
-      ) %>%
-      c(paste0(min(dates_contained) - 1, tail(turning_times, 1)),
-        .,
-        paste0(max(dates_contained) + 1, head(turning_times, 1))) %>%
-      matrix(., ncol = 2, byrow = T)
+    if(show_next_dark){
+      turning_points <-
+        paste0(
+          rep(dates_contained, each = length(turning_times)),
+          rep(turning_times, times = length(dates_contained))
+        ) %>%
+        c(paste0(min(dates_contained) - 1, tail(turning_times, 1)),
+          .,
+          paste0(max(dates_contained) + 1, head(turning_times, 1))) %>%
+        matrix(., ncol = 2, byrow = T)
+    } else {
+      turning_points <-
+        paste0(
+          rep(dates_contained, each = length(turning_times)),
+          rep(turning_times, times = length(dates_contained))
+        ) %>%
+        c(paste0(min(dates_contained) - 1, tail(turning_times, 1)),
+          .) %>%
+        head(-1) %>%
+        matrix(., ncol = 2, byrow = T)
+    }
 
     turning_points[,1] %>%
       seq_along %>%
