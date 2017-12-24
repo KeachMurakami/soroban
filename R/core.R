@@ -53,7 +53,7 @@ split_group <-
     spliter <-
       .tbl %>%
       group_vars %>%
-      paste0("UQ(", ., ")") %>%
+      paste0("rlang::UQ(", ., ")") %>%
       stringr::str_c(collapse = ", ") %>%
       paste0("paste0(", ., ")")
 
