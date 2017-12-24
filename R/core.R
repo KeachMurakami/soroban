@@ -48,21 +48,20 @@ trace <-
   }
 
 
-# function(.tbl_gr){
-#   group_merge <-
-#     .tbl_gr %>%
-#     group_vars %>%
-#     str_c(collapse = "+")
-#
-#
-#   groupsss <-
-#     rlang::quo(!!group_merge)
-#
-#   .tbl_gr %>%
-#     mutate("spliter" := rlang::eval_tidy(group_merge)) %>%
-#     select(spliter)
-#
-# }
+split_group <-
+  function(.tbl){
+    spliter <-
+      .tbl %>%
+      group_vars %>%
+      paste0("UQ(", ., ")") %>%
+      stringr::str_c(collapse = ", ") %>%
+      paste0("paste0(", ., ")")
+
+    .tbl %>%
+      dplyr::mutate(`_spliter` = rlang::eval_tidy(rlang::parse_expr(spliter))) %>%
+      split(.$`_spliter`) %>%
+      purrr::map(~ dplyr::select(., -`_spliter`))
+  }
 
 
 ### demo
